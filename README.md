@@ -1,61 +1,288 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Invitation Management System
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A comprehensive Laravel-based invitation management system with role-based access control, featuring separate dashboards for super administrators and regular administrators.
 
-## About Laravel
+## Features
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+### 🎯 Core Functionality
+- **Role-Based Access Control**: Separate dashboards for super admin and admin users
+- **Invitation Management**: Create, edit, and manage event invitations
+- **Template Builder**: Customizable invitation templates with HTML/CSS/JS support
+- **Staff Management**: Manage event staff and assignments
+- **Guest Management**: Track guests and their arrival status
+- **WhatsApp Integration**: Send invitations via WhatsApp (ready for API integration)
+- **QR Code System**: Generate and track QR codes for guest arrival
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### 👥 User Roles
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+#### Super Administrator
+- Full system access and control
+- User, role, and permission management
+- Invitation and template creation
+- System configuration and monitoring
 
-## Learning Laravel
+#### Administrator
+- Staff and guest management
+- Event coordination and tracking
+- Limited invitation access (view-only)
+- Guest assignment and arrival tracking
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## Technology Stack
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+- **Backend**: Laravel 12 (PHP 8.3+)
+- **Admin Panel**: Filament 3
+- **Frontend**: Livewire 3, Alpine.js, Tailwind CSS
+- **Database**: MySQL/PostgreSQL
+- **Authentication**: Laravel Sanctum
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## Installation
 
-## Laravel Sponsors
+### Prerequisites
+- PHP 8.3 or higher
+- Composer
+- MySQL/PostgreSQL
+- Node.js & NPM
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### Setup Steps
 
-### Premium Partners
+1. **Clone the repository**
+   ```bash
+   git clone <repository-url>
+   cd invitations
+   ```
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+2. **Install PHP dependencies**
+   ```bash
+   composer install
+   ```
+
+3. **Install Node.js dependencies**
+   ```bash
+   npm install
+   ```
+
+4. **Environment configuration**
+   ```bash
+   cp .env.example .env
+   php artisan key:generate
+   ```
+
+5. **Database configuration**
+   - Update `.env` file with your database credentials
+   - Run migrations and seeders:
+   ```bash
+   php artisan migrate:fresh --seed
+   ```
+
+6. **Build frontend assets**
+   ```bash
+   npm run build
+   ```
+
+7. **Start the development server**
+   ```bash
+   php artisan serve
+   ```
+
+## Default Access
+
+### Super Administrator
+- **URL**: `/super-admin`
+- **Email**: `superadmin@example.com`
+- **Password**: `password`
+
+### Administrator
+- **URL**: `/admin`
+- **Email**: Register a new account (will be assigned admin role by default)
+
+## System Architecture
+
+### Database Structure
+- **Users**: System users with role assignments
+- **Roles**: User roles with permission sets
+- **Permissions**: Granular system permissions
+- **Invitations**: Event invitations with templates
+- **Templates**: Reusable invitation templates
+- **Staff**: Event staff members
+- **Guests**: Event attendees
+- **Staff Assignments**: Staff-guest relationships
+
+### File Structure
+```
+app/
+├── Filament/
+│   ├── Admin/           # Admin panel resources
+│   └── SuperAdmin/      # Super admin panel resources
+├── Http/Controllers/
+│   └── Auth/            # Authentication controllers
+├── Models/              # Eloquent models
+└── Providers/
+    └── Filament/        # Panel providers
+
+resources/
+└── views/
+    └── auth/            # Authentication views
+
+database/
+├── migrations/          # Database migrations
+└── seeders/            # Database seeders
+```
+
+## Usage Guide
+
+### Creating Invitations (Super Admin)
+
+1. **Access Super Admin Panel**
+   - Navigate to `/super-admin`
+   - Login with super admin credentials
+
+2. **Create Template**
+   - Go to Templates → Create Template
+   - Use the rich editor for HTML content
+   - Add custom CSS and JavaScript
+   - Set thumbnail image
+
+3. **Create Invitation**
+   - Go to Invitations → Create Invitation
+   - Select template
+   - Add event details (name, location, date)
+   - Customize WhatsApp message
+   - Set status to "Active"
+
+4. **Send Invitations**
+   - Use the "Send WhatsApp" action
+   - Monitor guest responses
+
+### Managing Staff and Guests (Admin)
+
+1. **Access Admin Panel**
+   - Navigate to `/admin`
+   - Login with admin credentials
+
+2. **Add Staff Members**
+   - Go to Staff → Create Staff
+   - Fill in staff details
+   - Assign to specific events
+
+3. **Manage Guests**
+   - Go to Guests → Create Guest
+   - Assign to invitations
+   - Assign staff members
+   - Track arrival status
+
+4. **Event Coordination**
+   - Monitor guest responses
+   - Track staff assignments
+   - Mark guest arrivals
+
+## API Endpoints
+
+### Authentication
+- `POST /api/auth/login` - User login
+- `POST /api/auth/register` - User registration
+- `POST /api/auth/logout` - User logout
+- `POST /api/auth/forgot-password` - Password reset request
+- `POST /api/auth/reset-password` - Password reset
+
+### Invitations
+- `GET /api/invitations` - List invitations
+- `POST /api/invitations` - Create invitation
+- `GET /api/invitations/{id}` - Get invitation details
+- `PUT /api/invitations/{id}` - Update invitation
+- `DELETE /api/invitations/{id}` - Delete invitation
+- `POST /api/invitations/{id}/send` - Send invitation
+
+### Guests
+- `GET /api/guests` - List guests
+- `POST /api/guests` - Create guest
+- `GET /api/guests/{id}` - Get guest details
+- `PUT /api/guests/{id}` - Update guest
+- `DELETE /api/guests/{id}` - Delete guest
+- `POST /api/guests/{id}/arrive` - Mark guest arrival
+
+## Customization
+
+### Adding New Roles
+1. Create role in Super Admin panel
+2. Assign appropriate permissions
+3. Assign roles to users
+
+### Custom Permissions
+1. Add permission to database
+2. Update role assignments
+3. Implement permission checks in code
+
+### Template Customization
+1. Use the rich editor for HTML
+2. Add custom CSS for styling
+3. Include JavaScript for interactivity
+4. Preview templates before saving
+
+## Security Features
+
+- **Role-Based Access Control**: Granular permission system
+- **CSRF Protection**: Cross-site request forgery prevention
+- **Input Validation**: Comprehensive form validation
+- **Password Security**: Bcrypt hashing
+- **Session Management**: Secure session handling
+
+## Development
+
+### Running Tests
+```bash
+php artisan test
+```
+
+### Code Formatting
+```bash
+vendor/bin/pint
+```
+
+### Database Seeding
+```bash
+php artisan db:seed
+```
+
+## Deployment
+
+### Production Requirements
+- SSL certificate
+- Database optimization
+- Cache configuration
+- Queue worker setup
+- File storage configuration
+
+### Environment Variables
+- Database credentials
+- Mail configuration
+- File storage settings
+- WhatsApp API credentials (when integrated)
+
+## Support
+
+### Documentation
+- Business Analysis: `BLUEPRINT_BUSINESS_ANALYSIS.md`
+- Technical Analysis: `BLUEPRINT_TECHNICAL_ANALYSIS.md`
+
+### Common Issues
+1. **Permission Denied**: Check user role and permissions
+2. **Template Not Loading**: Verify template is active
+3. **Migration Errors**: Check database connection and credentials
 
 ## Contributing
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+1. Fork the repository
+2. Create feature branch
+3. Make changes
+4. Run tests
+5. Submit pull request
 
 ## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+This project is licensed under the MIT License.
+
+## Acknowledgments
+
+- Laravel team for the excellent framework
+- Filament team for the admin panel solution
+- All contributors and maintainers
