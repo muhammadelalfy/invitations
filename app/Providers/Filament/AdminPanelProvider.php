@@ -27,6 +27,7 @@ class AdminPanelProvider extends PanelProvider
         return $panel
             ->id('admin')
             ->path('/admin')
+            ->brandName(__('app.name'))
             ->login()
             ->colors([
                 'primary' => Color::Blue,

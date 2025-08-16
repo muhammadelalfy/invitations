@@ -83,6 +83,7 @@ return [
             ],
             'sections' => [
                 'permission_information' => 'Permission Information',
+                'permission_details' => 'Permission Details',
             ],
         ],
         'invitations' => [
@@ -122,7 +123,6 @@ return [
                 'template_settings' => 'Template Settings',
                 'communication' => 'Communication',
                 'guest_management' => 'Guest Management',
-                'permission_details' => 'Permission Details',
             ],
         ],
         'templates' => [

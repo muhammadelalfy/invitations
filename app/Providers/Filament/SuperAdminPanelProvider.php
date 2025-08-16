@@ -27,6 +27,7 @@ class SuperAdminPanelProvider extends PanelProvider
         return $panel
             ->id('super-admin')
             ->path('/super-admin')
+            ->brandName(__('app.name'))
             ->login()
             ->colors([
                 'primary' => Color::Purple,

@@ -83,6 +83,7 @@ return [
             ],
             'sections' => [
                 'permission_information' => 'معلومات الصلاحية',
+                'permission_details' => 'تفاصيل الصلاحية',
             ],
         ],
         'invitations' => [
@@ -122,7 +123,6 @@ return [
                 'template_settings' => 'إعدادات القالب',
                 'communication' => 'التواصل',
                 'guest_management' => 'إدارة الضيوف',
-                'permission_details' => 'تفاصيل الصلاحية',
             ],
         ],
         'templates' => [

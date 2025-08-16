@@ -1,8 +1,9 @@
 <?php
 
 return [
-    'name' => 'Invitation Management System',
-    'description' => 'A comprehensive system for managing invitations, guests, and events',
+    'name' => 'VIP Invitations',
+    'full_name' => 'VIP Invitations Management System',
+    'description' => 'A comprehensive VIP invitations system for managing exclusive events, guests, and premium experiences',
     
     'navigation' => [
         'dashboard' => 'Dashboard',
