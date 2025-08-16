@@ -14,9 +14,9 @@ class StaffResource extends Resource
 {
     protected static ?string $model = Staff::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-user-group';
+    protected static ?string $navigationIcon = 'heroicon-o-users';
 
-    protected static ?string $navigationGroup = 'Staff Management';
+    protected static ?string $navigationGroup = 'Management';
 
     protected static ?int $navigationSort = 1;
 
@@ -24,57 +24,51 @@ class StaffResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Section::make('Staff Information')
-                    ->schema([
+                Forms\Components\TextInput::make('name')
+                    ->required()
+                    ->maxLength(255),
+                Forms\Components\TextInput::make('email')
+                    ->email()
+                    ->required()
+                    ->maxLength(255),
+                Forms\Components\TextInput::make('phone_number')
+                    ->tel()
+                    ->required()
+                    ->maxLength(255),
+                Forms\Components\TextInput::make('position')
+                    ->required()
+                    ->maxLength(255),
+                Forms\Components\Select::make('user_id')
+                    ->relationship('user', 'name')
+                    ->searchable()
+                    ->preload()
+                    ->createOptionForm([
                         Forms\Components\TextInput::make('name')
                             ->required()
                             ->maxLength(255),
-                        
                         Forms\Components\TextInput::make('email')
                             ->email()
                             ->required()
                             ->maxLength(255)
-                            ->unique(ignoreRecord: true),
-                        
-                        Forms\Components\TextInput::make('phone_number')
-                            ->tel()
+                            ->unique(),
+                        Forms\Components\TextInput::make('password')
+                            ->password()
                             ->required()
-                            ->maxLength(20),
-                        
-                        Forms\Components\TextInput::make('position')
+                            ->minLength(8),
+                        Forms\Components\TextInput::make('password_confirmation')
+                            ->password()
                             ->required()
-                            ->maxLength(255)
-                            ->placeholder('e.g., Receptionist, Coordinator'),
-                        
-                        Forms\Components\Select::make('user_id')
-                            ->relationship('user', 'name')
-                            ->searchable()
-                            ->preload()
-                            ->createOptionForm([
-                                Forms\Components\TextInput::make('name')
-                                    ->required()
-                                    ->maxLength(255),
-                                Forms\Components\TextInput::make('email')
-                                    ->email()
-                                    ->required()
-                                    ->maxLength(255)
-                                    ->unique(),
-                                Forms\Components\TextInput::make('password')
-                                    ->password()
-                                    ->required()
-                                    ->minLength(8),
-                            ]),
-                        
-                        Forms\Components\Select::make('status')
-                            ->options([
-                                'active' => 'Active',
-                                'inactive' => 'Inactive',
-                                'on_leave' => 'On Leave',
-                            ])
-                            ->default('active')
-                            ->required(),
+                            ->minLength(8)
+                            ->same('password'),
+                    ]),
+                Forms\Components\Select::make('status')
+                    ->options([
+                        'active' => 'Active',
+                        'inactive' => 'Inactive',
+                        'on_leave' => 'On Leave',
                     ])
-                    ->columns(2),
+                    ->required()
+                    ->default('active'),
             ]);
     }
 
@@ -83,21 +77,13 @@ class StaffResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
-                    ->searchable()
-                    ->sortable(),
-                
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('email')
-                    ->searchable()
-                    ->sortable(),
-                
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('phone_number')
-                    ->searchable()
-                    ->sortable(),
-                
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('position')
-                    ->searchable()
-                    ->sortable(),
-                
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('status')
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
@@ -106,26 +92,16 @@ class StaffResource extends Resource
                         'on_leave' => 'warning',
                         default => 'gray',
                     }),
-                
                 Tables\Columns\TextColumn::make('assigned_guests_count')
                     ->counts('assignedGuests')
-                    ->label('Assigned Guests')
-                    ->sortable(),
-                
+                    ->label('Assigned Guests'),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                Tables\Filters\SelectFilter::make('status')
-                    ->options([
-                        'active' => 'Active',
-                        'inactive' => 'Inactive',
-                        'on_leave' => 'On Leave',
-                    ]),
-                Tables\Filters\SelectFilter::make('position')
-                    ->options(fn () => Staff::distinct()->pluck('position', 'position')->toArray()),
+                //
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),

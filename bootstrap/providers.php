@@ -2,6 +2,7 @@
 
 return [
     App\Providers\AppServiceProvider::class,
+    App\Providers\LocaleServiceProvider::class,
     App\Providers\Filament\AdminPanelProvider::class,
     App\Providers\Filament\SuperAdminPanelProvider::class,
     App\Providers\FortifyServiceProvider::class,

@@ -9,6 +9,7 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Filament\Tables\Actions\Action;
 
 class GuestResource extends Resource
 {
@@ -16,7 +17,7 @@ class GuestResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-user';
 
-    protected static ?string $navigationGroup = 'Guest Management';
+    protected static ?string $navigationGroup = 'Events';
 
     protected static ?int $navigationSort = 1;
 
@@ -24,65 +25,48 @@ class GuestResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Section::make('Guest Information')
-                    ->schema([
+                Forms\Components\TextInput::make('name')
+                    ->required()
+                    ->maxLength(255),
+                Forms\Components\TextInput::make('email')
+                    ->email()
+                    ->required()
+                    ->maxLength(255),
+                Forms\Components\TextInput::make('phone_number')
+                    ->tel()
+                    ->required()
+                    ->maxLength(255),
+                Forms\Components\Select::make('invitation_id')
+                    ->relationship('invitation', 'name')
+                    ->required()
+                    ->searchable()
+                    ->preload()
+                    ->createOptionForm([
                         Forms\Components\TextInput::make('name')
                             ->required()
                             ->maxLength(255),
-                        
-                        Forms\Components\TextInput::make('email')
-                            ->email()
+                        Forms\Components\TextInput::make('location')
                             ->required()
                             ->maxLength(255),
-                        
-                        Forms\Components\TextInput::make('phone_number')
-                            ->tel()
-                            ->required()
-                            ->maxLength(20),
-                        
-                        Forms\Components\Select::make('invitation_id')
-                            ->relationship('invitation', 'name')
-                            ->required()
-                            ->searchable()
-                            ->preload()
-                            ->createOptionForm([
-                                Forms\Components\TextInput::make('name')
-                                    ->required()
-                                    ->maxLength(255),
-                                Forms\Components\TextInput::make('location')
-                                    ->required()
-                                    ->maxLength(255),
-                                Forms\Components\DateTimePicker::make('event_date')
-                                    ->required()
-                                    ->minDate(now()),
-                            ]),
-                        
-                        Forms\Components\Select::make('assigned_staff_id')
-                            ->relationship('assignedStaff', 'name')
-                            ->searchable()
-                            ->preload()
-                            ->helperText('Staff member responsible for this guest'),
-                        
-                        Forms\Components\Select::make('status')
-                            ->options([
-                                'invited' => 'Invited',
-                                'confirmed' => 'Confirmed',
-                                'arrived' => 'Arrived',
-                                'no_show' => 'No Show',
-                                'cancelled' => 'Cancelled',
-                            ])
-                            ->default('invited')
+                        Forms\Components\DateTimePicker::make('event_date')
                             ->required(),
+                    ]),
+                Forms\Components\Select::make('assigned_staff_id')
+                    ->relationship('assignedStaff', 'name')
+                    ->searchable()
+                    ->preload(),
+                Forms\Components\Select::make('status')
+                    ->options([
+                        'invited' => 'Invited',
+                        'confirmed' => 'Confirmed',
+                        'arrived' => 'Arrived',
+                        'no_show' => 'No Show',
+                        'cancelled' => 'Cancelled',
                     ])
-                    ->columns(2),
-
-                Forms\Components\Section::make('Arrival Details')
-                    ->schema([
-                        Forms\Components\DateTimePicker::make('arrival_time')
-                            ->label('Arrival Time')
-                            ->helperText('When the guest arrived at the event'),
-                    ])
-                    ->collapsible(),
+                    ->required()
+                    ->default('invited'),
+                Forms\Components\DateTimePicker::make('arrival_time')
+                    ->visible(fn (string $context): bool => $context === 'edit'),
             ]);
     }
 
@@ -91,28 +75,15 @@ class GuestResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
-                    ->searchable()
-                    ->sortable(),
-                
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('email')
-                    ->searchable()
-                    ->sortable(),
-                
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('phone_number')
-                    ->searchable()
-                    ->sortable(),
-                
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('invitation.name')
-                    ->label('Event')
-                    ->searchable()
-                    ->sortable()
-                    ->limit(30),
-                
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('assignedStaff.name')
-                    ->label('Assigned Staff')
-                    ->searchable()
-                    ->sortable(),
-                
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('status')
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
@@ -123,47 +94,32 @@ class GuestResource extends Resource
                         'cancelled' => 'warning',
                         default => 'gray',
                     }),
-                
                 Tables\Columns\TextColumn::make('arrival_time')
                     ->dateTime()
-                    ->sortable()
-                    ->toggleable(),
-                
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                Tables\Filters\SelectFilter::make('status')
-                    ->options([
-                        'invited' => 'Invited',
-                        'confirmed' => 'Confirmed',
-                        'arrived' => 'Arrived',
-                        'no_show' => 'No Show',
-                        'cancelled' => 'Cancelled',
-                    ]),
-                Tables\Filters\SelectFilter::make('invitation')
-                    ->relationship('invitation', 'name')
-                    ->searchable(),
-                Tables\Filters\SelectFilter::make('assigned_staff')
-                    ->relationship('assignedStaff', 'name')
-                    ->searchable(),
+                //
             ])
             ->actions([
-                Tables\Actions\Action::make('mark_arrived')
-                    ->icon('heroicon-o-check-circle')
-                    ->label('Mark Arrived')
-                    ->color('success')
-                    ->requiresConfirmation()
-                    ->action(fn (Guest $record) => $record->update([
-                        'status' => 'arrived',
-                        'arrival_time' => now(),
-                    ]))
-                    ->visible(fn (Guest $record) => $record->status !== 'arrived'),
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
+                Action::make('mark_arrived')
+                    ->label('Mark Arrived')
+                    ->icon('heroicon-o-check-circle')
+                    ->color('success')
+                    ->visible(fn (Guest $record) => $record->status !== 'arrived')
+                    ->action(function (Guest $record) {
+                        $record->update([
+                            'status' => 'arrived',
+                            'arrival_time' => now(),
+                        ]);
+                    }),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

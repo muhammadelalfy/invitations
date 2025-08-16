@@ -16,7 +16,7 @@ class PermissionResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-key';
 
-    protected static ?string $navigationGroup = 'User Management';
+    protected static ?string $navigationGroup = 'System';
 
     protected static ?int $navigationSort = 2;
 
@@ -24,24 +24,16 @@ class PermissionResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Section::make('Permission Information')
-                    ->schema([
-                        Forms\Components\TextInput::make('name')
-                            ->required()
-                            ->maxLength(255)
-                            ->unique(ignoreRecord: true)
-                            ->placeholder('e.g., create-users, manage-invitations'),
-                        
-                        Forms\Components\TextInput::make('display_name')
-                            ->required()
-                            ->maxLength(255)
-                            ->placeholder('e.g., Create Users, Manage Invitations'),
-                        
-                        Forms\Components\Textarea::make('description')
-                            ->maxLength(500)
-                            ->placeholder('Describe what this permission allows users to do'),
-                    ])
-                    ->columns(2),
+                Forms\Components\TextInput::make('name')
+                    ->required()
+                    ->maxLength(255)
+                    ->unique(ignoreRecord: true),
+                Forms\Components\TextInput::make('display_name')
+                    ->required()
+                    ->maxLength(255),
+                Forms\Components\Textarea::make('description')
+                    ->maxLength(65535)
+                    ->columnSpanFull(),
             ]);
     }
 
@@ -50,34 +42,25 @@ class PermissionResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
-                    ->searchable()
-                    ->sortable()
-                    ->badge()
-                    ->color('success'),
-                
-                Tables\Columns\TextColumn::make('display_name')
-                    ->searchable()
-                    ->sortable(),
-                
-                Tables\Columns\TextColumn::make('description')
-                    ->limit(50)
                     ->searchable(),
-                
+                Tables\Columns\TextColumn::make('display_name')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('description')
+                    ->limit(50),
                 Tables\Columns\TextColumn::make('roles_count')
                     ->counts('roles')
-                    ->label('Roles')
-                    ->sortable(),
-                
+                    ->label('Roles'),
                 Tables\Columns\TextColumn::make('created_at')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('updated_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                Tables\Filters\SelectFilter::make('roles')
-                    ->relationship('roles', 'display_name')
-                    ->multiple()
-                    ->searchable(),
+                //
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

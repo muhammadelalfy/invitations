@@ -17,7 +17,7 @@ class UserResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-users';
 
-    protected static ?string $navigationGroup = 'User Management';
+    protected static ?string $navigationGroup = 'System';
 
     protected static ?int $navigationSort = 3;
 
@@ -25,41 +25,35 @@ class UserResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Section::make('User Information')
-                    ->schema([
-                        Forms\Components\TextInput::make('name')
-                            ->required()
-                            ->maxLength(255),
-                        
-                        Forms\Components\TextInput::make('email')
-                            ->email()
-                            ->required()
-                            ->maxLength(255)
-                            ->unique(ignoreRecord: true),
-                        
-                        Forms\Components\Select::make('role_id')
-                            ->relationship('role', 'display_name')
-                            ->required()
-                            ->searchable()
-                            ->preload(),
-                    ])
-                    ->columns(2),
-
-                Forms\Components\Section::make('Password')
-                    ->schema([
-                        Forms\Components\TextInput::make('password')
-                            ->password()
-                            ->dehydrateStateUsing(fn ($state) => Hash::make($state))
-                            ->dehydrated(fn ($state) => filled($state))
-                            ->required(fn (string $context): bool => $context === 'create'),
-                        
-                        Forms\Components\TextInput::make('password_confirmation')
-                            ->password()
-                            ->same('password')
-                            ->required(fn (string $context): bool => $context === 'create'),
-                    ])
-                    ->columns(2)
-                    ->collapsible(),
+                Forms\Components\TextInput::make('name')
+                    ->required()
+                    ->maxLength(255),
+                
+                Forms\Components\TextInput::make('email')
+                    ->email()
+                    ->required()
+                    ->maxLength(255)
+                    ->unique(ignoreRecord: true),
+                
+                Forms\Components\Select::make('role_id')
+                    ->relationship('role', 'display_name')
+                    ->required()
+                    ->searchable()
+                    ->preload(),
+                
+                Forms\Components\TextInput::make('password')
+                    ->password()
+                    ->required(fn (string $context): bool => $context === 'create')
+                    ->minLength(8)
+                    ->dehydrated(fn ($state) => filled($state))
+                    ->label(fn (string $context): string => $context === 'edit' ? 'New Password' : 'Password'),
+                
+                Forms\Components\TextInput::make('password_confirmation')
+                    ->password()
+                    ->required(fn (string $context): bool => $context === 'create')
+                    ->minLength(8)
+                    ->dehydrated(false)
+                    ->same('password'),
             ]);
     }
 
