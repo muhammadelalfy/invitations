@@ -68,10 +68,10 @@ class AdminPanelProvider extends PanelProvider
             ->sidebarFullyCollapsibleOnDesktop()
             ->navigationGroups([
                 NavigationGroup::make()
-                    ->label(__('filament::navigation.groups.management'))
+                    ->label(__('filament.navigation.groups.management'))
                     ->icon('heroicon-o-users'),
                 NavigationGroup::make()
-                    ->label(__('filament::navigation.groups.events'))
+                    ->label(__('filament.navigation.groups.events'))
                     ->icon('heroicon-o-calendar'),
             ]);
     }

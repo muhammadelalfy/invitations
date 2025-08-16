@@ -17,7 +17,27 @@ class UserResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-users';
 
-    protected static ?string $navigationGroup = 'System';
+    protected static ?string $navigationGroup = null;
+    
+    public static function getNavigationGroup(): ?string
+    {
+        return __('filament.navigation.groups.system');
+    }
+    
+    public static function getNavigationLabel(): string
+    {
+        return __('filament.resources.users.navigation_label');
+    }
+    
+    public static function getModelLabel(): string
+    {
+        return __('filament.resources.users.label');
+    }
+    
+    public static function getPluralModelLabel(): string
+    {
+        return __('filament.resources.users.plural_label');
+    }
 
     protected static ?int $navigationSort = 3;
 
@@ -25,35 +45,54 @@ class UserResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name')
-                    ->required()
-                    ->maxLength(255),
+                Forms\Components\Section::make(__('filament.resources.users.sections.account_information'))
+                    ->schema([
+                        Forms\Components\TextInput::make('name')
+                            ->label(__('filament.resources.users.fields.name'))
+                            ->placeholder(__('filament.resources.users.placeholders.name'))
+                            ->required()
+                            ->maxLength(255),
+                        
+                        Forms\Components\TextInput::make('email')
+                            ->label(__('filament.resources.users.fields.email'))
+                            ->placeholder(__('filament.resources.users.placeholders.email'))
+                            ->email()
+                            ->required()
+                            ->maxLength(255)
+                            ->unique(ignoreRecord: true),
+                        
+                        Forms\Components\Select::make('role_id')
+                            ->label(__('filament.resources.users.fields.role'))
+                            ->relationship('role', 'display_name')
+                            ->required()
+                            ->searchable()
+                            ->preload(),
+                    ])
+                    ->columns(2),
                 
-                Forms\Components\TextInput::make('email')
-                    ->email()
-                    ->required()
-                    ->maxLength(255)
-                    ->unique(ignoreRecord: true),
-                
-                Forms\Components\Select::make('role_id')
-                    ->relationship('role', 'display_name')
-                    ->required()
-                    ->searchable()
-                    ->preload(),
-                
-                Forms\Components\TextInput::make('password')
-                    ->password()
-                    ->required(fn (string $context): bool => $context === 'create')
-                    ->minLength(8)
-                    ->dehydrated(fn ($state) => filled($state))
-                    ->label(fn (string $context): string => $context === 'edit' ? 'New Password' : 'Password'),
-                
-                Forms\Components\TextInput::make('password_confirmation')
-                    ->password()
-                    ->required(fn (string $context): bool => $context === 'create')
-                    ->minLength(8)
-                    ->dehydrated(false)
-                    ->same('password'),
+                Forms\Components\Section::make(__('filament.resources.users.sections.security'))
+                    ->schema([
+                        Forms\Components\TextInput::make('password')
+                            ->label(fn (string $context): string => $context === 'edit' 
+                                ? __('filament.resources.users.fields.new_password') 
+                                : __('filament.resources.users.fields.password'))
+                            ->placeholder(__('filament.resources.users.placeholders.password'))
+                            ->password()
+                            ->required(fn (string $context): bool => $context === 'create')
+                            ->minLength(8)
+                            ->dehydrated(fn ($state) => filled($state)),
+                        
+                        Forms\Components\TextInput::make('password_confirmation')
+                            ->label(__('filament.resources.users.fields.password_confirmation'))
+                            ->placeholder(__('filament.resources.users.placeholders.password_confirmation'))
+                            ->password()
+                            ->required(fn (string $context): bool => $context === 'create')
+                            ->minLength(8)
+                            ->dehydrated(false)
+                            ->same('password'),
+                    ])
+                    ->columns(2)
+                    ->visible(fn (string $context): bool => $context !== 'view'),
             ]);
     }
 
@@ -62,24 +101,29 @@ class UserResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
+                    ->label(__('filament.resources.users.fields.name'))
                     ->searchable()
                     ->sortable(),
                 
                 Tables\Columns\TextColumn::make('email')
+                    ->label(__('filament.resources.users.fields.email'))
                     ->searchable()
                     ->sortable(),
                 
                 Tables\Columns\TextColumn::make('role.display_name')
+                    ->label(__('filament.resources.users.fields.role'))
                     ->badge()
                     ->color('primary')
                     ->sortable(),
                 
                 Tables\Columns\TextColumn::make('email_verified_at')
+                    ->label(__('filament.resources.users.fields.email_verified_at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 
                 Tables\Columns\TextColumn::make('created_at')
+                    ->label(__('filament.resources.users.fields.created_at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

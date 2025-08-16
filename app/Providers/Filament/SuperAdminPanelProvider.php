@@ -68,11 +68,11 @@ class SuperAdminPanelProvider extends PanelProvider
             ->sidebarFullyCollapsibleOnDesktop()
             ->navigationGroups([
                 NavigationGroup::make()
-                    ->label(__('filament::navigation.groups.system'))
+                    ->label(__('filament.navigation.groups.system'))
                     ->icon('heroicon-o-cog-6-tooth'),
                 NavigationGroup::make()
-                    ->label(__('filament::navigation.groups.content'))
-                    ->icon('heroicon-o-document-text'),
+                    ->label(__('filament.navigation.groups.invitation_management'))
+                    ->icon('heroicon-o-envelope'),
             ]);
     }
 }

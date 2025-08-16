@@ -10,10 +10,16 @@ class ViewStaff extends ViewRecord
 {
     protected static string $resource = StaffResource::class;
 
+    public function getTitle(): string
+    {
+        return __('filament.actions.view') . ' ' . __('filament.resources.staff.label');
+    }
+
     protected function getHeaderActions(): array
     {
         return [
-            Actions\EditAction::make(),
+            Actions\EditAction::make()
+                ->label(__('filament.actions.edit')),
         ];
     }
 }

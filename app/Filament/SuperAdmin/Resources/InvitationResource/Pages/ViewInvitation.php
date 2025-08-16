@@ -10,10 +10,16 @@ class ViewInvitation extends ViewRecord
 {
     protected static string $resource = InvitationResource::class;
 
+    public function getTitle(): string
+    {
+        return __('filament.actions.view') . ' ' . __('filament.resources.invitations.label');
+    }
+
     protected function getHeaderActions(): array
     {
         return [
-            Actions\EditAction::make(),
+            Actions\EditAction::make()
+                ->label(__('filament.actions.edit')),
         ];
     }
 }

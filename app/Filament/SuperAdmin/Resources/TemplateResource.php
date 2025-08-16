@@ -16,7 +16,27 @@ class TemplateResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
 
-    protected static ?string $navigationGroup = 'Invitation Management';
+    protected static ?string $navigationGroup = null;
+    
+    public static function getNavigationGroup(): ?string
+    {
+        return __('filament.navigation.groups.invitation_management');
+    }
+    
+    public static function getNavigationLabel(): string
+    {
+        return __('filament.resources.templates.navigation_label');
+    }
+    
+    public static function getModelLabel(): string
+    {
+        return __('filament.resources.templates.label');
+    }
+    
+    public static function getPluralModelLabel(): string
+    {
+        return __('filament.resources.templates.plural_label');
+    }
 
     protected static ?int $navigationSort = 2;
 
@@ -24,27 +44,29 @@ class TemplateResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Section::make('Template Information')
+                Forms\Components\Section::make(__('filament.resources.templates.sections.template_information'))
                     ->schema([
                         Forms\Components\TextInput::make('name')
+                            ->label(__('filament.resources.templates.fields.name'))
+                            ->placeholder(__('filament.resources.templates.placeholders.name'))
                             ->required()
-                            ->maxLength(255)
-                            ->placeholder('e.g., Elegant Conference, Casual Party'),
+                            ->maxLength(255),
                         
                         Forms\Components\Textarea::make('description')
-                            ->maxLength(500)
-                            ->placeholder('Describe the template style and purpose'),
+                            ->label(__('filament.resources.templates.fields.description'))
+                            ->placeholder(__('filament.resources.templates.placeholders.description'))
+                            ->maxLength(500),
                         
                         Forms\Components\Toggle::make('is_active')
-                            ->default(true)
-                            ->label('Active'),
+                            ->label(__('filament.resources.templates.fields.is_active'))
+                            ->default(true),
                     ])
                     ->columns(2),
 
-                Forms\Components\Section::make('Page Builder Content')
+                Forms\Components\Section::make(__('filament.resources.templates.sections.content'))
                     ->schema([
                         Forms\Components\RichEditor::make('html_content')
-                            ->label('HTML Content')
+                            ->label(__('filament.resources.templates.fields.html_content'))
                             ->required()
                             ->toolbarButtons([
                                 'bold',
@@ -60,30 +82,31 @@ class TemplateResource extends Resource
                                 'blockquote',
                                 'codeBlock',
                             ])
-                            ->placeholder('Build your invitation template here...')
-                            ->helperText('Use HTML tags and styling to create your template'),
+                            ->placeholder(__('filament.resources.templates.placeholders.html_content'))
+                            ->helperText(__('filament.resources.templates.helpers.html_content')),
                         
                         Forms\Components\Textarea::make('css_content')
-                            ->label('CSS Styles')
+                            ->label(__('filament.resources.templates.fields.css_content'))
                             ->rows(8)
-                            ->placeholder('/* Add custom CSS styles here */')
-                            ->helperText('Custom CSS for styling your template'),
+                            ->placeholder(__('filament.resources.templates.placeholders.css_content'))
+                            ->helperText(__('filament.resources.templates.helpers.css_content')),
                         
                         Forms\Components\Textarea::make('js_content')
-                            ->label('JavaScript')
+                            ->label(__('filament.resources.templates.fields.js_content'))
                             ->rows(6)
-                            ->placeholder('// Add custom JavaScript here')
-                            ->helperText('Custom JavaScript for interactive features'),
+                            ->placeholder(__('filament.resources.templates.placeholders.js_content'))
+                            ->helperText(__('filament.resources.templates.helpers.js_content')),
                     ])
                     ->collapsible(),
 
-                Forms\Components\Section::make('Thumbnail')
+                Forms\Components\Section::make(__('filament.resources.templates.sections.design_settings'))
                     ->schema([
                         Forms\Components\FileUpload::make('thumbnail')
+                            ->label(__('filament.resources.templates.fields.thumbnail'))
                             ->image()
                             ->imageEditor()
                             ->imageCropAspectRatio('16:9')
-                            ->helperText('Preview image for the template'),
+                            ->helperText(__('filament.resources.templates.helpers.thumbnail')),
                     ])
                     ->collapsible(),
             ]);
@@ -94,27 +117,32 @@ class TemplateResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\ImageColumn::make('thumbnail')
+                    ->label(__('filament.resources.templates.fields.thumbnail'))
                     ->circular()
                     ->size(40),
                 
                 Tables\Columns\TextColumn::make('name')
+                    ->label(__('filament.resources.templates.fields.name'))
                     ->searchable()
                     ->sortable(),
                 
                 Tables\Columns\TextColumn::make('description')
+                    ->label(__('filament.resources.templates.fields.description'))
                     ->limit(50)
                     ->searchable(),
                 
                 Tables\Columns\IconColumn::make('is_active')
+                    ->label(__('filament.resources.templates.fields.is_active'))
                     ->boolean()
                     ->sortable(),
                 
                 Tables\Columns\TextColumn::make('invitations_count')
                     ->counts('invitations')
-                    ->label('Used In')
+                    ->label(__('filament.resources.templates.fields.used_in'))
                     ->sortable(),
                 
                 Tables\Columns\TextColumn::make('created_at')
+                    ->label(__('filament.resources.templates.fields.created_at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
