@@ -1,0 +1,63 @@
+iam making invitation system with Laravel filament 4 and want 2 dashboards for super admin and for admins 
+create super admin and admin roles and permissions and two dashboards to each one according to his role in filament
+make crud for roles and permissions 
+
+make authentication system register and login and reset password and change password pages
+
+admin role 
+
+will add staff member delete update view details 
+
+will add guests which will attend conference or festival 
+
+will assign staff member or members to receive guests or one guest 
+
+
+super admin 
+will create update delete send view invitations 
+
+invitation has tamplates added by page builder 
+
+admin will select invitation template and add 
+
+invitation name location qr code button to press arrvived by the guest 
+
+will send invitation in whats app containing arrival button to the guests 
+
+---------------------
+
+make it rtl and ltr 
+
+make multi auth 
+
+make panels with diffirent colors 
+
+make diffirent guards for each panel 
+
+redirect admin to his panel after auth 
+
+redirect super admin to his panel after auth 
+
+add statistics in home page for every panel and  remove default widgets 
+
+change project name from Laravel to e-invitaions
+
+make panel for stuff to see assigned guests 
+
+change dashboard in sidebar to admin for admin and super admin for super admin and also for stuff
+
+make location input in invitation google map fetch to record lat and lng in db
+
+make seeders for guests templates and staff
+
+show how to make register for admins and change password reset password 
+
+------
+
+add subscription system for admins controlled by super admin
+
+make notification system for admin 
+
+
+
+
