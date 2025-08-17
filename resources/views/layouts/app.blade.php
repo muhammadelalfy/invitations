@@ -47,7 +47,7 @@
                         <!-- Logo -->
                         <div class="shrink-0 flex items-center">
                             <a href="{{ route('dashboard') }}" class="text-xl font-bold text-gray-800">
-                                {{ config('app.name', 'Laravel') }}
+                                {{ __('app.name') }}
                             </a>
                         </div>
 

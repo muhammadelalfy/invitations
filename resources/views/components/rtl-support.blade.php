@@ -23,42 +23,55 @@
         
         // Adjust Filament panel elements
         const adjustRTL = () => {
-            // Main layout elements
-            const sidebar = document.querySelector('.filament-sidebar, .fi-sidebar');
+            // Main layout elements - only for non-interactive elements
             const main = document.querySelector('.filament-main, .fi-main');
             const header = document.querySelector('.filament-header, .fi-header');
             const topbar = document.querySelector('.filament-topbar, .fi-topbar');
-            const navigation = document.querySelector('.filament-navigation, .fi-navigation');
             
-            // Apply RTL direction to main elements
-            [sidebar, main, header, topbar, navigation].forEach(el => {
+            // Apply RTL direction to main elements (excluding sidebar and navigation)
+            [main, header, topbar].forEach(el => {
                 if (el) el.style.direction = 'rtl';
             });
             
-            // Filament v3 specific selectors
+            // Filament v3 specific selectors - only for non-interactive elements
             const filamentElements = document.querySelectorAll(
-                '.fi-main-ctn, .fi-sidebar-nav, .fi-topbar, .fi-ta-content, ' +
+                '.fi-main-ctn, .fi-topbar, .fi-ta-content, ' +
                 '.fi-form, .fi-section, .fi-table, .fi-modal, ' +
-                '.fi-dropdown, .fi-btn-group, .fi-input-wrapper, ' +
-                '.fi-sidebar-nav-item, .fi-sidebar-nav-group'
+                '.fi-dropdown, .fi-btn-group, .fi-input-wrapper'
             );
             
             filamentElements.forEach(el => {
                 el.style.direction = 'rtl';
             });
             
-            // Fix sidebar navigation items
+            // Fix sidebar navigation items - only text alignment, not direction
             const sidebarNavItems = document.querySelectorAll('.fi-sidebar-nav-item-button, .fi-sidebar-nav-item-label');
             sidebarNavItems.forEach(item => {
                 item.style.textAlign = 'right';
-                item.style.direction = 'rtl';
+                // Don't override direction - let Filament handle it
             });
+            
+            // Simple RTL positioning for sidebar navigation groups
+            const adjustSidebarGroups = () => {
+                const groups = document.querySelectorAll('.fi-sidebar-nav-group');
+                groups.forEach(group => {
+                    const groupButton = group.querySelector('.fi-sidebar-nav-group-button');
+                    if (groupButton) {
+                        // Don't override direction - let Filament handle everything
+                        // Only apply RTL class for CSS targeting if needed
+                        groupButton.classList.add('rtl-group');
+                    }
+                });
+            };
+            
+            // Run simple sidebar adjustment
+            adjustSidebarGroups();
             
             // Fix text alignment for forms and inputs
             const inputs = document.querySelectorAll('input[type="text"], input[type="email"], textarea, select');
             inputs.forEach(input => {
                 input.style.textAlign = 'right';
-                input.style.direction = 'rtl';
+                // Don't override direction - let Filament handle it
             });
         };
         
@@ -71,6 +84,16 @@
         // Also run after a delay to catch dynamically loaded content
         setTimeout(adjustRTL, 100);
         setTimeout(adjustRTL, 500);
+        
+        // Setup sidebar groups on various events
+        document.addEventListener('livewire:load', adjustSidebarGroups);
+        document.addEventListener('livewire:navigated', adjustSidebarGroups);
+        document.addEventListener('DOMContentLoaded', adjustSidebarGroups);
+        
+        // Also run after a delay to catch dynamically loaded content
+        setTimeout(adjustSidebarGroups, 100);
+        setTimeout(adjustSidebarGroups, 500);
+
     } else {
         // Remove RTL class if switching to LTR
         document.body.classList.remove('rtl');
@@ -104,24 +127,19 @@ document.addEventListener('livewire:navigated', function() {
     direction: rtl;
 }
 
-/* Legacy Filament selectors */
+/* Legacy Filament selectors - only for non-interactive elements */
 [dir="rtl"] .filament-main,
-[dir="rtl"] .filament-sidebar,
 [dir="rtl"] .filament-main-content,
 [dir="rtl"] .filament-header,
-[dir="rtl"] .filament-topbar,
-[dir="rtl"] .filament-navigation {
+[dir="rtl"] .filament-topbar {
     direction: rtl;
 }
 
-/* Filament v3 selectors */
+/* Filament v3 selectors - only for non-interactive elements */
 [dir="rtl"] .fi-main,
-[dir="rtl"] .fi-sidebar,
 [dir="rtl"] .fi-main-ctn,
 [dir="rtl"] .fi-header,
 [dir="rtl"] .fi-topbar,
-[dir="rtl"] .fi-navigation,
-[dir="rtl"] .fi-sidebar-nav,
 [dir="rtl"] .fi-ta-content,
 [dir="rtl"] .fi-form,
 [dir="rtl"] .fi-section,
@@ -141,7 +159,7 @@ document.addEventListener('livewire:navigated', function() {
 [dir="rtl"] textarea,
 [dir="rtl"] select {
     text-align: right;
-    direction: rtl;
+    /* Don't override direction - let Filament handle it */
 }
 
 /* Filament input wrappers */
@@ -149,7 +167,7 @@ document.addEventListener('livewire:navigated', function() {
 [dir="rtl"] .fi-input,
 [dir="rtl"] .fi-textarea,
 [dir="rtl"] .fi-select {
-    direction: rtl;
+    /* Don't override direction - let Filament handle it */
 }
 
 [dir="rtl"] .fi-input-wrapper input,
@@ -160,11 +178,11 @@ document.addEventListener('livewire:navigated', function() {
 
 /* Buttons and actions */
 [dir="rtl"] .fi-btn-group {
-    flex-direction: row-reverse;
+    /* Don't override flex-direction - let Filament handle it */
 }
 
 [dir="rtl"] .fi-btn {
-    direction: rtl;
+    /* Don't override direction - let Filament handle it */
 }
 
 /* Tables */
@@ -181,7 +199,7 @@ document.addEventListener('livewire:navigated', function() {
 /* Navigation adjustments */
 [dir="rtl"] .fi-sidebar-nav,
 [dir="rtl"] .fi-sidebar-nav-item {
-    direction: rtl;
+    /* Don't override direction - let Filament handle it */
 }
 
 [dir="rtl"] .fi-sidebar-nav-item-icon {
@@ -211,7 +229,7 @@ document.addEventListener('livewire:navigated', function() {
 }
 
 [dir="rtl"] .fi-sidebar-nav-item-button {
-    flex-direction: row-reverse;
+    /* Don't override flex-direction - let Filament handle it */
 }
 
 [dir="rtl"] .fi-sidebar-nav-item-badge {
@@ -259,7 +277,7 @@ document.addEventListener('livewire:navigated', function() {
 
 /* Breadcrumbs */
 [dir="rtl"] .fi-breadcrumbs {
-    direction: rtl;
+    /* Don't override direction - let Filament handle it */
 }
 
 [dir="rtl"] .fi-breadcrumb-item::after {
@@ -268,18 +286,18 @@ document.addEventListener('livewire:navigated', function() {
 
 /* Page header */
 [dir="rtl"] .fi-page-header {
-    direction: rtl;
+    /* Don't override direction - let Filament handle it */
 }
 
 /* Cards and panels */
 [dir="rtl"] .fi-card,
 [dir="rtl"] .fi-section-content {
-    direction: rtl;
+    /* Don't override direction - let Filament handle it */
 }
 
 /* Widget adjustments */
 [dir="rtl"] .fi-widget {
-    direction: rtl;
+    /* Don't override direction - let Filament handle it */
 }
 
 /* RTL Support for locale switcher */
@@ -296,13 +314,21 @@ document.addEventListener('livewire:navigated', function() {
 
 /* Fix for Filament badges */
 [dir="rtl"] .fi-badge {
-    direction: rtl;
+    /* Don't override direction - let Filament handle it */
 }
 
 /* Fix for Filament notifications */
 [dir="rtl"] .fi-notification {
-    direction: rtl;
+    /* Don't override direction - let Filament handle it */
     text-align: right;
 }
+
+/* Simple RTL positioning for sidebar groups - don't override direction */
+[dir="rtl"] .fi-sidebar-nav-group-button {
+    /* Let Filament handle all direction and rotation */
+}
+
+
+
 </style>
 

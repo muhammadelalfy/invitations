@@ -26,7 +26,7 @@ will send invitation in whats app containing arrival button to the guests
 
 ---------------------
 
-make it rtl and ltr 
+make panels rtl and ltr in filament and enable language swicher from sa saudi arabia labeled العربية and english labled English with icons for each lang 
 
 make multi auth 
 
@@ -60,10 +60,4 @@ make notification system for admin
 
 
 
-
-adding logo and make it editable 
-
-adding profile image for user 
-
-super addmin control the theme
 

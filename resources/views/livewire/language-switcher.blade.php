@@ -58,7 +58,7 @@
 
     {{-- Inline styles for this component --}}
     <style>
-    /* Language Switcher Styles */
+    /* Language Switcher Styles - Theme Responsive */
     .language-switcher-wrapper {
         position: relative;
         z-index: 50;
@@ -84,25 +84,26 @@
         align-items: center;
         gap: 0.5rem;
         padding: 0.5rem 0.75rem;
-        background: white;
-        border: 1px solid #e5e7eb;
+        background: var(--fi-bg);
+        border: 1px solid var(--fi-border-color);
         border-radius: 0.5rem;
         cursor: pointer;
         transition: all 0.15s ease;
         font-size: 0.875rem;
         font-weight: 500;
-        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+        box-shadow: var(--fi-shadow);
         min-width: 120px;
+        color: var(--fi-color);
     }
 
     .language-switcher-trigger:hover {
-        background: #f9fafb;
-        border-color: #d1d5db;
+        background: var(--fi-bg-hover);
+        border-color: var(--fi-border-color-hover);
     }
 
     .language-switcher-trigger.active {
-        background: #f3f4f6;
-        border-color: #9ca3af;
+        background: var(--fi-bg-active);
+        border-color: var(--fi-border-color-active);
     }
 
     .current-language {
@@ -117,14 +118,14 @@
     }
 
     .current-language .label {
-        color: #374151;
+        color: var(--fi-color);
         white-space: nowrap;
     }
 
     .dropdown-arrow {
         width: 1rem;
         height: 1rem;
-        color: #6b7280;
+        color: var(--fi-muted-color);
         transition: transform 0.15s ease;
         flex-shrink: 0;
     }
@@ -135,10 +136,10 @@
         left: 0;
         right: 0;
         margin-top: 0.25rem;
-        background: white;
-        border: 1px solid #e5e7eb;
+        background: var(--fi-bg);
+        border: 1px solid var(--fi-border-color);
         border-radius: 0.5rem;
-        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        box-shadow: var(--fi-shadow-lg);
         overflow: hidden;
     }
 
@@ -169,6 +170,7 @@
         transition: all 0.15s ease;
         font-size: 0.875rem;
         text-align: left;
+        color: var(--fi-color);
     }
 
     [dir="rtl"] .language-option {
@@ -176,12 +178,12 @@
     }
 
     .language-option:hover {
-        background: #f3f4f6;
+        background: var(--fi-bg-hover);
     }
 
     .language-option.active {
-        background: #ede9fe;
-        color: #7c3aed;
+        background: var(--fi-primary-500);
+        color: var(--fi-primary-on);
     }
 
     .language-option .flag {
@@ -197,48 +199,63 @@
     .language-option .check-icon {
         width: 1rem;
         height: 1rem;
-        color: #7c3aed;
+        color: var(--fi-primary-on);
         flex-shrink: 0;
     }
 
-    /* Dark mode support */
-    @media (prefers-color-scheme: dark) {
-        .language-switcher-trigger {
-            background: #1f2937;
-            border-color: #374151;
-        }
-        
-        .language-switcher-trigger:hover {
-            background: #374151;
-            border-color: #4b5563;
-        }
-        
-        .language-switcher-trigger.active {
-            background: #374151;
-            border-color: #6b7280;
-        }
-        
-        .current-language .label {
-            color: #d1d5db;
-        }
-        
-        .dropdown-arrow {
-            color: #9ca3af;
-        }
-        
-        .language-dropdown {
-            background: #1f2937;
-            border-color: #374151;
-        }
-        
-        .language-option:hover {
-            background: #374151;
-        }
-        
-        .language-option.active {
-            background: #581c87;
-            color: #c4b5fd;
-        }
+    /* Fallback styles for when CSS variables are not available */
+    .language-switcher-trigger {
+        background: #ffffff;
+        border-color: #e5e7eb;
+        color: #374151;
+    }
+
+    .language-dropdown {
+        background: #ffffff;
+        border-color: #e5e7eb;
+    }
+
+    .language-option {
+        color: #374151;
+    }
+
+    .language-option:hover {
+        background: #f3f4f6;
+    }
+
+    .language-option.active {
+        background: #7c3aed;
+        color: #ffffff;
+    }
+
+    /* Dark theme fallback */
+    .dark .language-switcher-trigger,
+    [data-theme="dark"] .language-switcher-trigger {
+        background: #1f2937;
+        border-color: #374151;
+        color: #d1d5db;
+    }
+
+    .dark .language-dropdown,
+    [data-theme="dark"] .language-dropdown {
+        background: #1f2937;
+        border-color: #374151;
+    }
+
+    .dark .language-option,
+    [data-theme="dark"] .language-option {
+        color: #d1d5db;
+    }
+
+    .dark .language-option:hover,
+    [data-theme="dark"] .language-option:hover {
+        background: #374151;
+    }
+
+    .dark .language-option.active,
+    [data-theme="dark"] .language-option.active {
+        background: #581c87;
+        color: #c4b5fd;
     }
 
     /* RTL specific adjustments */
@@ -286,6 +303,22 @@
             htmlElement.setAttribute('dir', 'ltr');
             htmlElement.setAttribute('lang', 'en');
             document.body.classList.remove('rtl');
+        }
+    });
+
+    // Listen for Filament theme changes
+    document.addEventListener('filament-theme-changed', function() {
+        // Force a small reflow to ensure CSS variables are updated
+        document.body.offsetHeight;
+    });
+
+    // Also listen for potential theme toggle events
+    document.addEventListener('click', function(e) {
+        if (e.target && e.target.closest('[data-filament-theme-toggle]')) {
+            // Theme toggle clicked, wait a bit then force reflow
+            setTimeout(() => {
+                document.body.offsetHeight;
+            }, 100);
         }
     });
     </script>

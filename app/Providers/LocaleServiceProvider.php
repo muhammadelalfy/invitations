@@ -78,3 +78,4 @@ class LocaleServiceProvider extends ServiceProvider
     }
 }
 
+
